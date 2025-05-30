@@ -1,5 +1,8 @@
 #include "chip8.hpp"
 #include <fstream>
+#include <chrono>
+#include <random>
+
 
 Chip8::Chip8(){
     pc = START_ADDRESS;
@@ -27,3 +30,9 @@ void Chip8::LoadROM(char const* filename) {
             delete[] buffer;
         }
     }
+
+int Chip8::RandGen(uint8_t NN){
+    int v1 = rand() % 256;
+    v1 = v1 & NN;
+    return v1;
+}

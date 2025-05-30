@@ -7,6 +7,7 @@ class Chip8 {
     public:
         Chip8();
         void LoadROM(char const* filename);
+        int RandGen(uint8_t NN);
 
     private:
         static const unsigned int START_ADDRESS = 0x200;
