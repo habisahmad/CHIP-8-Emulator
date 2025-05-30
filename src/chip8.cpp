@@ -10,6 +10,7 @@ Chip8::Chip8(){
     for (long i = 0; i < FONTSET_SIZE; i++) {
         memory[FONTSET_ADDRESS + i] = FONTSET[i];
     }
+
 };
 
 void Chip8::LoadROM(char const* filename) {
@@ -35,4 +36,10 @@ int Chip8::RandGen(uint8_t NN){
     int v1 = rand() % 256;
     v1 = v1 & NN;
     return v1;
+}
+
+void Chip8::OP_00E0(){
+    for (int i = 0; i < 64*32; i++){
+        video[i] = 0;
+    }
 }
