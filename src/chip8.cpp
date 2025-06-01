@@ -156,3 +156,80 @@ void Chip8::OP_8XY4() {
     V[Vx] = sum & 0xFF; // Keep lower 8 bits
 }
 
+void Chip8::OP_8XY5() {
+    uint8_t Vx = (opcode & 0x0F00) >> 8;
+    uint8_t Vy = (opcode & 0x00F0) >> 4;
+
+    if (V[Vx] > V[Vy]) {
+        V[15] = 0;
+    }
+    else {
+        V[15] = 1;
+    }
+
+    V[Vx] = V[Vx] - V[Vy];
+}
+
+void Chip8::OP_8XY7() {
+    uint8_t Vx = (opcode & 0x0F00) >> 8;
+    uint8_t Vy = (opcode & 0x00F0) >> 4;
+
+    if (V[Vy] > V[Vx]) {
+        V[15] = 0;
+    }
+    else {
+        V[15] = 1;
+    }
+
+    V[Vx] = V[Vy] - V[Vx];
+}
+
+void Chip8::OP_8XY6(){
+    uint8_t Vx = (opcode & 0x0F00) >> 8;
+    uint8_t Vy = (opcode & 0x00F0) >> 4;
+
+    V[Vx] = V[Vy];
+    if ((V[Vx] & 1) == 1) {
+        V[15] = 1;
+    }
+    else {
+        V[15] = 0;
+    }
+    V[Vx] = V[Vx] >> 1;
+
+}
+
+void Chip8::OP_8XYE(){
+    uint8_t Vx = (opcode & 0x0F00) >> 8;
+    uint8_t Vy = (opcode & 0x00F0) >> 4;
+    V[Vx] = V[Vy];
+    if ((V[Vx] & 0x80) != 0) {
+        V[15] = 1;
+    }
+    else {
+        V[15] = 0;
+    }
+    V[Vx] = V[Vx] << 1;
+
+}
+
+void Chip8::OP_ANNN(){
+    uint8_t NNN = (opcode & 0x0FFF);
+
+    index = NNN;
+}
+
+void Chip8::OP_BNNN() {
+    uint8_t NNN = (opcode & 0x0FFF);
+
+    pc = NNN + V[0x0]; 
+}
+
+void Chip8::OP_CXNN() {
+    uint8_t NN = opcode & 0x00FF;
+    uint8_t Vx = (opcode & 0x0F00) >> 8;
+
+    uint8_t r = rand() % 256;
+
+    V[Vx] = r & NN;
+}
