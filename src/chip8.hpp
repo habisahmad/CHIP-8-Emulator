@@ -7,8 +7,31 @@ class Chip8 {
     public:
         Chip8();
         void LoadROM(char const* filename);
-        int RandGen(uint8_t NN);
+        uint8_t RandGen();
         void Chip8::OP_00E0();
+        void Chip8::OP_1NNN();
+        void Chip8::OP_00EE();
+        void Chip8::OP_2NNN();
+        void Chip8::OP_3XNN();
+        void Chip8::OP_4XNN();
+        void Chip8::OP_5XY0();
+        void Chip8::OP_9XY0();
+        void Chip8::OP_6XNN();
+        void Chip8::OP_7XNN();
+        void Chip8::OP_8XY0();
+        void Chip8::OP_8XY1();
+        void Chip8::OP_8XY2();
+        void Chip8::OP_8XY3();
+        void Chip8::OP_8XY4();
+        void Chip8::OP_8XY5();
+        void Chip8::OP_8XY6();
+        void Chip8::OP_8XY7();
+        void Chip8::OP_8XYE();
+        void Chip8::OP_ANNN();
+        void Chip8::OP_BNNN();
+        void Chip8::OP_CXNN();
+        void Chip8::OP_DXYN();
+        
 
     private:
         static const unsigned int START_ADDRESS = 0x200;
