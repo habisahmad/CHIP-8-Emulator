@@ -233,3 +233,32 @@ void Chip8::OP_CXNN() {
 
     V[Vx] = r & NN;
 }
+
+void Chip8::OP_DXYN() {
+    uint8_t Vx = (opcode & 0x0F00) >> 8;
+    uint8_t Vy = (opcode & 0x00F0) >> 4;
+    uint8_t N = opcode & 0x000F;
+
+    // Wrap bits
+    uint8_t X = V[Vx] % 64;
+    uint8_t Y = V[Vy] % 32;
+    V[15] = 0;
+
+    for (unsigned int rows = 0; rows < N; rows++) {
+        uint8_t spriteData = memory[index + rows];
+
+        for (unsigned int i = 0; i < 8; i++){
+            uint8_t currentPixel = spriteData & (0x80 >> i);
+            
+            // if current pixel is on
+            if (currentPixel != 0) {
+                
+                if (video[(X + i) + ((Y + rows) * 64)] == 1) {
+                    video[(X + i) + ((Y + rows) * 64)] = 0;
+                    V[15] = 1;
+                }
+                video[(X + i) + ((Y + rows) * 64)] ^= 1;
+            }
+        }
+    }
+}
