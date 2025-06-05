@@ -7,7 +7,6 @@ class Chip8 {
     public:
         Chip8();
         void LoadROM(char const* filename);
-        uint8_t RandGen();
 
 
     private:
@@ -22,6 +21,7 @@ class Chip8 {
         uint16_t stack[16]{}; // Stack
         uint8_t stackptr{};
         uint16_t index{};
+        uint8_t keypad[16]{};
         uint8_t V[16]{}; // General purpose registers (V0-VF)
         uint16_t opcode;
         uint8_t FONTSET[FONTSET_SIZE] = {
@@ -67,6 +67,18 @@ class Chip8 {
         void Chip8::OP_BNNN();
         void Chip8::OP_CXNN();
         void Chip8::OP_DXYN();
+        void Chip8::OP_EX9E();
+        void Chip8::OP_EXA1();
+        void Chip8::OP_FX07();
+        void Chip8::OP_FX15();
+        void Chip8::OP_FX18();
+        void Chip8::OP_FX1E();
+        void Chip8::OP_FX0A();
+        void Chip8::OP_FX29();
+        void Chip8::OP_FX33();
+        void Chip8::OP_FX55();
+        void Chip8::OP_FX65();
+
 
 };
 

@@ -32,13 +32,6 @@ void Chip8::LoadROM(char const* filename) {
         }
     }
 
-uint8_t Chip8::RandGen(){
-    uint8_t v1 = rand() % 256;
-    uint16_t NNN = opcode & 0x0FFF;
-    v1 = v1 & NNN;
-    return v1;
-}
-
 void Chip8::OP_00E0(){
     for (int i = 0; i < 64*32; i++){
         video[i] = 0;
@@ -260,5 +253,91 @@ void Chip8::OP_DXYN() {
                 video[(X + i) + ((Y + rows) * 64)] ^= 1;
             }
         }
+    }
+}
+
+void Chip8::OP_EX9E(){
+    uint8_t Vx = (opcode & 0x0F00) >> 8;
+
+    if (keypad[V[Vx]] == 1) {
+        pc = pc + 2;
+    }
+}
+
+void Chip8::OP_EXA1(){
+    uint8_t Vx = (opcode & 0x0F00) >> 8;
+
+    if (keypad[V[Vx]] != 1) {
+        pc = pc + 2;
+    }
+}
+
+void Chip8::OP_FX07(){
+    uint8_t Vx = (opcode & 0x0F00) >> 8;
+
+    V[Vx] = delaytimer;
+}
+void Chip8::OP_FX15(){
+    uint8_t Vx = (opcode & 0x0F00) >> 8;
+    
+    delaytimer = V[Vx];
+}
+void Chip8::OP_FX18(){
+    uint8_t Vx = (opcode & 0x0F00) >> 8;
+    soundTimer = V[Vx];
+}
+
+void Chip8::OP_FX1E() {
+    uint8_t Vx = (opcode & 0x0F00) >> 8;
+    index = index + V[Vx];
+}
+
+
+void Chip8::OP_FX0A() { 
+    uint8_t Vx = (opcode & 0x0F00) >> 8;
+
+    bool keyPressed = false;
+
+    for (unsigned int i = 0; i < 16; i++){
+        if (keypad[i]){
+            keyPressed = true;
+            V[Vx] = i;
+            break;
+        }
+    }
+
+    if (!keyPressed) {
+        pc = pc - 2;
+    }
+}
+
+void Chip8::OP_FX29() {
+    uint8_t Vx = (opcode & 0x0F00) >> 8;
+
+    index = FONTSET_ADDRESS + (5 * V[Vx]);
+}
+
+void Chip8::OP_FX33() {
+    uint8_t Vx = (opcode & 0x0F00) >> 8;
+    uint8_t num = V[Vx];
+
+    memory[index] = num / 100;
+    memory[index+1] = (num / 10) % 10;
+    memory[index+2] = num % 10;
+}
+
+void Chip8::OP_FX55() {
+    uint8_t Vx = (opcode & 0x0F00) >> 8;
+
+    for (int i = 0; i < Vx+1; i++){
+        memory[index + i] = V[i];
+    }
+}
+
+void Chip8::OP_FX65() {
+    uint8_t Vx = (opcode & 0x0F00) >> 8;
+
+    for (int i = 0; i < Vx+1; i++){
+        V[i] = memory[index + i];
     }
 }
