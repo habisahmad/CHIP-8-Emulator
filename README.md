@@ -16,9 +16,13 @@ A simple CHIP-8 Emulator built in C++
 - C++17 or later
 - [CMake](https://cmake.org/) (3.10+)
 - [GLAD](https://glad.dav1d.de/)
+- SDL2
+- pkg-config
 
 # How to run
 ```bash
+brew install pkg-config
+brew install sdl2
 git clone https://github.com/habisahmad/CHIP-8-Emulator.git
 cd chip-8-emulator
 mkdir build && cd build
