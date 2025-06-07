@@ -1,4 +1,4 @@
-#CHIP-8 EMULATOR
+# CHIP-8 EMULATOR
 
 A simple CHIP-8 Emulator built in C++ 
 
