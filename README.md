@@ -6,7 +6,7 @@ A simple CHIP-8 Emulator built in C++
 
 ## Features
 - Full CHIP-8 instruction set support
-- OpenGL rendering using GLFW and GLAD
+- OpenGL rendering using GLAD
 - Sound and delay timers
 - Keyboard input mapping
 - Included test ROMs
