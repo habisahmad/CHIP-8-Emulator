@@ -24,7 +24,7 @@ cd chip-8-emulator
 mkdir build && cd build
 cmake ..
 make
-./chip8 ../roms/ibm.ch8
+./chip8 10 1 ../roms/ibm.ch8
 ```
 
 CHIP-8 Keypad Layout    &   Keyboard Mapping
