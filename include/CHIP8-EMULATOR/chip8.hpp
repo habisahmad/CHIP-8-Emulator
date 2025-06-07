@@ -1,20 +1,17 @@
-#ifndef CHIP8_HPP
-#define CHIP8_HPP
-
 #include <cstdint>
+
 
 class Chip8 {
     public:
         Chip8();
         void LoadROM(char const* filename);
-
-
-    private:
+        void Cycle();
+    
         static const unsigned int START_ADDRESS = 0x200;
         static const unsigned int FONTSET_SIZE = 80;
         static const unsigned int FONTSET_ADDRESS = 0x50;
         uint8_t memory[4096]{}; // 4KB memory
-        uint8_t video[64*32]{}; // Display
+        uint32_t video[64*32]{}; // Display
         uint16_t pc{}; // Program Counter
         uint8_t delaytimer{}; // Delay Timer
         uint8_t soundTimer{}; // Sound Timer
@@ -44,42 +41,54 @@ class Chip8 {
         };
 
         // Functions
-        void Chip8::OP_00E0();
-        void Chip8::OP_1NNN();
-        void Chip8::OP_00EE();
-        void Chip8::OP_2NNN();
-        void Chip8::OP_3XNN();
-        void Chip8::OP_4XNN();
-        void Chip8::OP_5XY0();
-        void Chip8::OP_9XY0();
-        void Chip8::OP_6XNN();
-        void Chip8::OP_7XNN();
-        void Chip8::OP_8XY0();
-        void Chip8::OP_8XY1();
-        void Chip8::OP_8XY2();
-        void Chip8::OP_8XY3();
-        void Chip8::OP_8XY4();
-        void Chip8::OP_8XY5();
-        void Chip8::OP_8XY6();
-        void Chip8::OP_8XY7();
-        void Chip8::OP_8XYE();
-        void Chip8::OP_ANNN();
-        void Chip8::OP_BNNN();
-        void Chip8::OP_CXNN();
-        void Chip8::OP_DXYN();
-        void Chip8::OP_EX9E();
-        void Chip8::OP_EXA1();
-        void Chip8::OP_FX07();
-        void Chip8::OP_FX15();
-        void Chip8::OP_FX18();
-        void Chip8::OP_FX1E();
-        void Chip8::OP_FX0A();
-        void Chip8::OP_FX29();
-        void Chip8::OP_FX33();
-        void Chip8::OP_FX55();
-        void Chip8::OP_FX65();
+        void OP_00E0();
+        void OP_1NNN();
+        void OP_00EE();
+        void OP_2NNN();
+        void OP_3XNN();
+        void OP_4XNN();
+        void OP_5XY0();
+        void OP_9XY0();
+        void OP_6XNN();
+        void OP_7XNN();
+        void OP_8XY0();
+        void OP_8XY1();
+        void OP_8XY2();
+        void OP_8XY3();
+        void OP_8XY4();
+        void OP_8XY5();
+        void OP_8XY6();
+        void OP_8XY7();
+        void OP_8XYE();
+        void OP_ANNN();
+        void OP_BNNN();
+        void OP_CXNN();
+        void OP_DXYN();
+        void OP_EX9E();
+        void OP_EXA1();
+        void OP_FX07();
+        void OP_FX15();
+        void OP_FX18();
+        void OP_FX1E();
+        void OP_FX0A();
+        void OP_FX29();
+        void OP_FX33();
+        void OP_FX55();
+        void OP_FX65();
 
+        typedef void (Chip8::*Chip8Func)();
+        Chip8Func table[0xF + 1];
+        Chip8Func table0[0xE + 1];
+        Chip8Func table8[0xE + 1];
+        Chip8Func tableE[0xE + 1];
+        Chip8Func tableF[0x65 + 1];
+
+        void Table0();
+        void Table8();
+        void TableE();
+        void TableF();
+
+        // Do nothing
+        void OP_NULL();
 
 };
-
-#endif
