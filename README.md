@@ -1,4 +1,8 @@
+#CHIP-8 EMULATOR
+
 A simple CHIP-8 Emulator built in C++ 
+
+![image](https://github.com/user-attachments/assets/d1cd1afb-f5cc-4f8d-bbf0-b5ecb59763b2)
 
 ## Features
 - Full CHIP-8 instruction set support
@@ -20,10 +24,10 @@ cd chip8-emulator
 mkdir build && cd build
 cmake ..
 make
-./chip8 ../roms/Pong.ch8
+./chip8 ../roms/IBM.ch8
 ```
 
-CHIP-8 Keypad Layout       Keyboard Mapping
+CHIP-8 Keypad Layout    &   Keyboard Mapping
 ```
 1 2 3 C                     1 2 3 4
 4 5 6 D         --->        Q W E R
