@@ -19,12 +19,12 @@ A simple CHIP-8 Emulator built in C++
 
 # How to run
 ```bash
-git clone https://github.com/your-username/chip8-emulator.git
-cd chip8-emulator
+git clone https://github.com/habisahmad/CHIP-8-Emulator.git
+cd chip-8-emulator
 mkdir build && cd build
 cmake ..
 make
-./chip8 ../roms/IBM.ch8
+./chip8 ../roms/ibm.ch8
 ```
 
 CHIP-8 Keypad Layout    &   Keyboard Mapping
