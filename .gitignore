@@ -2,3 +2,4 @@ build/
 .vscode/
 include/glad/
 include/KHR/
+src/gl.c
