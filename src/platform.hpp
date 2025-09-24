@@ -1,20 +1,29 @@
 #include <cstdint>
 #include <SDL2/SDL.h>
-#include <glad/gl.h>
 
 class Platform
 {
 public:
+
 	Platform(char const* title, int windowWidth, int windowHeight, int textureWidth, int textureHeight)
 	{
-		SDL_Init(SDL_INIT_VIDEO);
+		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0) {
+        	throw std::runtime_error(SDL_GetError());
+    	}
 
-		window = SDL_CreateWindow(title, 0, 0, windowWidth, windowHeight, SDL_WINDOW_SHOWN);
+    	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
 
-		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    	window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowWidth, windowHeight, SDL_WINDOW_SHOWN);
+    	if (!window) throw std::runtime_error(SDL_GetError());
 
-		texture = SDL_CreateTexture(
-			renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, textureWidth, textureHeight);
+    	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+   		if (!renderer) throw std::runtime_error(SDL_GetError());
+
+    	SDL_RenderSetLogicalSize(renderer, textureWidth, textureHeight);
+
+    	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, textureWidth, textureHeight);
+    	if (!texture) throw std::runtime_error(SDL_GetError());
+
 	}
 
 	~Platform()

@@ -1,4 +1,4 @@
-#include <CHIP8-EMULATOR/chip8.hpp>
+#include "chip8.hpp"
 #include <fstream>
 #include <chrono>
 #include <random>
