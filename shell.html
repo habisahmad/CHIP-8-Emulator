@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>CHIP-8 (WASM)</title>
+
+  <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg" href="Nes_controller.svg"/>
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    html, body {
+      margin:0; padding:0;
+      background:#ffffff; color:#000000;
+      font:14px/1.45 "Press Start 2P", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      letter-spacing: .2px;
+    }
+    .wrap { max-width: 900px; margin: 24px auto; padding: 0 16px; }
+    header { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; }
+    h1 { font-size:16px; margin:0; color:#000000; }
+    #status { font-weight:600; color:#9aa0a6; }
+    #progress { width:220px; height:8px; vertical-align:middle; margin-left:8px; }
+    .board { border:1px solid #1f2230; border-radius:12px; padding:12px; background:#12141b; }
+    .canvas-wrap { display:flex; justify-content:center; padding:8px; }
+    canvas#canvas {
+      display:block;
+      width:min(92vw, 800px);
+      height:calc(min(92vw, 800px)/2);
+      background:#000;
+      image-rendering: pixelated;
+    }
+    .footer { margin-top:10px; font-size:12px; color:#8b8f97; text-align:center; }
+    #spinner { width:16px; height:16px; border-radius:50%;
+      border:2px solid #3a3f4b; border-top-color:#9aa0a6;
+      animation:spin .8s linear infinite; display:none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;          
+    }
+    .brand h1{        
+      margin:0;
+      font-size:16px;
+    }
+
+    .footer {
+      margin-top: 20px;
+      padding: 16px 0;
+      border-top: 1px solid #fdfeff;
+      background: #fff;
+    }
+    .footer .wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .footer .credit {
+      font-size: 12px;
+      color: #8b8f97;  /* adjust for light theme if needed */
+    }
+    .footer .social {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .footer .icon-link {
+      display: inline-flex;
+      line-height: 0;
+      text-decoration: none;
+    }
+
+
+    #output { display:none; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <i class="nes-octocat animate"></i>
+        <h1>CHIPY Emulator</h1>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <div id="spinner"></div>
+        <div id="status">Loading…</div>
+        <progress id="progress" max="100" value="0" hidden></progress>
+      </div>
+    </header>
+
+    <div class="board">
+      <div class="canvas-wrap">
+        <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex="-1"></canvas>
+      </div>
+    </div>
+    <label for="default_select">Default select</label>
+    <div class="nes-select">
+      <select required id="default_select">
+        <option value="" disabled selected hidden>Select...</option>
+        <option value="0">ibm.ch8</option>
+        <option value="1">Pong.ch8</option>
+        <option value="2">Tetris.ch8</option>
+        <option value="3">KeypadTest.ch8</option>
+        <option value="4">Chip8.ch8</option>
+      </select>
+    </div>
+    <a class="nes-btn" href="#">Load ROM</a>
+    <textarea id="output" rows="8"></textarea>
+    <div class="footer">use keyboard: 1 2 3 4 &nbsp; Q W E R &nbsp; A S D F &nbsp; Z X C V</div>
+    <footer class="footer">
+      <div class="wrap">
+        <span class="credit">Made by <strong>Habis Ahmad</strong></span>
+        <nav class="social">
+          <a class="icon-link" href="https://github.com/habisahmad" target="_blank" rel="noopener" aria-label="GitHub">
+            <i class="nes-icon github is-medium"></i>
+          </a>
+          <a class="icon-link" href="https://www.linkedin.com/in/habis-ahmad" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <i class="nes-icon linkedin is-medium"></i>
+          </a>
+        </nav>
+      </div>
+</footer>
+
+  </div>
+
+  <script>
+    const statusEl   = document.getElementById('status');
+    const progressEl = document.getElementById('progress');
+    const spinnerEl  = document.getElementById('spinner');
+    const canvasEl   = document.getElementById('canvas');
+    const outputEl   = document.getElementById('output');
+
+    canvasEl.addEventListener('webglcontextlost', (e) => {
+      alert('WebGL context lost. Reload the page.'); e.preventDefault();
+    }, false);
+
+    // Minimal Module config Emscripten/SDL expects
+    var Module = {
+      print: (...args) => {
+        console.log(...args);
+        if (!outputEl) return;
+        outputEl.value += args.join(' ') + '\n';
+        outputEl.scrollTop = outputEl.scrollHeight;
+      },
+      canvas: canvasEl,
+      setStatus: (text) => {
+        const last = Module.setStatus.last || (Module.setStatus.last = { time: Date.now(), text: '' });
+        if (text === last.text) return;
+        const m = text && text.match(/([^(]+)\((\d+(?:\.\d+)?)\/(\d+)\)/);
+        const now = Date.now();
+        if (m && (now - last.time) < 30) return; // throttle
+        last.time = now; last.text = text || '';
+        // show/hide progress + spinner
+        if (m) {
+          statusEl.textContent = m[1].trim();
+          progressEl.hidden = false;
+          progressEl.value  = 100 * parseFloat(m[2]);
+          progressEl.max    = 100 * parseFloat(m[3]);
+          spinnerEl.style.display = 'inline-block';
+        } else {
+          progressEl.hidden = true;
+          statusEl.textContent = text || '';
+          spinnerEl.style.display = text ? 'inline-block' : 'none';
+        }
+      },
+      totalDependencies: 0,
+      monitorRunDependencies: (left) => {
+        Module.totalDependencies = Math.max(Module.totalDependencies, left);
+        Module.setStatus(left
+          ? `Preparing... (${Module.totalDependencies - left}/${Module.totalDependencies})`
+          : 'Ready');
+        if (!left) spinnerEl.style.display = 'none';
+      }
+    };
+    Module.setStatus('Downloading…');
+    window.onerror = () => {
+      Module.setStatus('Exception thrown, see console');
+      spinnerEl.style.display = 'none';
+    };
+
+    const ROMS = {
+      "0": "ibm.ch8",
+      "1": "Pong.ch8",
+      "2": "Tetris.ch8",
+      "3": "KeypadTest.ch8",
+      "4": "Chip8.ch8"
+    };
+    // Load ROM, when button clicked, change C++ side
+    // to load selected ROM from the list
+    Module.onRuntimeInitialized = () => {
+      const romSelect = document.getElementById('default_select');
+      const loadRomBtn = document.querySelector('a.nes-btn');
+      const loadRom = Module.cwrap('loadROM', 'void', ['string']);
+      loadRomBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const romIndex = romSelect.value;
+        loadRom(ROMS[romIndex]);
+        document.getElementById('canvas').focus();
+        console.log("Requested to load ROM:", ROMS[romIndex]);
+      });
+    };
+  </script>
+
+  {{{ SCRIPT }}}
+</body>
+</html>

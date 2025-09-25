@@ -321,30 +321,26 @@ void Chip8::OP_CXNN() {
 void Chip8::OP_DXYN() {
     uint8_t Vx = (opcode & 0x0F00) >> 8;
     uint8_t Vy = (opcode & 0x00F0) >> 4;
-    uint8_t N = opcode & 0x000F;
+    uint8_t N  =  opcode & 0x000F;
 
-    // Wrap bits
-    uint8_t X = V[Vx] % 64;
-    uint8_t Y = V[Vy] % 32;
+    uint8_t X = V[Vx] & 63; 
+    uint8_t Y = V[Vy] & 31; 
     V[15] = 0;
 
-    for (unsigned int rows = 0; rows < N; rows++) {
-        uint8_t spriteData = memory[index + rows];
-
-        for (unsigned int i = 0; i < 8; i++){
-            uint8_t currentPixel = spriteData & (0x80 >> i);
-            
-            // if current pixel is on
-            if (currentPixel != 0) {
-                
-                if (video[(X + i) + ((Y + rows) * 64)] == 0xFFFFFFFF) {
-                    V[15] = 1;
-                }
-                video[(X + i) + ((Y + rows) * 64)] ^= 0xFFFFFFFF;
+    for (uint8_t row = 0; row < N; row++) {
+        uint8_t sprite = memory[index + row];
+        uint8_t py = (Y + row) & 31;
+        for (uint8_t bit = 0; bit < 8; bit++) {
+            if (sprite & (0x80 >> bit)) {
+                uint8_t px = (X + bit) & 63;
+                size_t pos = px + py * 64;
+                if (video[pos] == 0xFFFFFFFF) V[15] = 1;
+                video[pos] ^= 0xFFFFFFFF;
             }
         }
     }
 }
+
 
 void Chip8::OP_EX9E(){
     uint8_t Vx = (opcode & 0x0F00) >> 8;
