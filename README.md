@@ -5,7 +5,7 @@ A simple, fast CHIP-8 emulator written in C++ with an SDL2 renderer, ported to W
 # Live Preview
 [**▶ Play in your browser**](https://habisahmad.github.io/CHIP-8-Emulator/)
 <br/>
-<img width="3420" height="1520" alt="image" src="https://github.com/user-attachments/assets/f62b81ac-6f0f-45d1-bfca-d7f9a6b381d4" />
+<img width="2262" height="1754" alt="image" src="https://github.com/user-attachments/assets/34f6d9c0-59b4-42bc-b2df-154005dccd1e" />
 
 ## Features
 - Full CHIP-8 instruction set support
