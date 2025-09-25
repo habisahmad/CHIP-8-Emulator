@@ -19,7 +19,6 @@ A simple, fast CHIP-8 emulator written in C++ with an SDL2 renderer, ported to W
 - C++17 or later
 - SDL2
 - [Emscripten](https://emscripten.org/docs/getting_started/downloads.html) (emsdk)
-- 
   
 
 # Build
