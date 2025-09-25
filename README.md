@@ -1,8 +1,8 @@
 # CHIP-8 EMULATOR
 
-A simple CHIP-8 Emulator built in C++ 
+A simple, fast CHIP-8 emulator written in C++ with an SDL2 renderer, ported to WebAssembly via Emscripten
 
-![image](https://github.com/user-attachments/assets/d1cd1afb-f5cc-4f8d-bbf0-b5ecb59763b2)
+<img width="3420" height="1520" alt="image" src="https://github.com/user-attachments/assets/f62b81ac-6f0f-45d1-bfca-d7f9a6b381d4" />
 
 ## Features
 - Full CHIP-8 instruction set support
