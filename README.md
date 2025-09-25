@@ -10,25 +10,23 @@ A simple, fast CHIP-8 emulator written in C++ with an SDL2 renderer, ported to W
 - Sound and delay timers
 - Keyboard input mapping
 - Included test ROMs
-
+- Lightweight HTML/CSS UI (web), deployed to GitHub Pages
 ## Requirements
 
 - C++17 or later
-- [CMake](https://cmake.org/) (3.10+)
-- [GLAD](https://glad.dav1d.de/)
 - SDL2
 - pkg-config
 
-# How to run
+# Build
 ```bash
-brew install pkg-config
-brew install sdl2
-git clone https://github.com/habisahmad/CHIP-8-Emulator.git
-cd chip-8-emulator
-mkdir build && cd build
-cmake ..
-make
-./chip8 10 1 ../roms/ibm.ch8
+em++ src/*.cpp -std=c++17 -O3 \
+  -sUSE_SDL=2 \
+  -sALLOW_MEMORY_GROWTH=1 \
+  --preload-file roms@/roms \
+  -sEXPORTED_FUNCTIONS='["_main","_loadROM"]' \
+  -sEXPORTED_RUNTIME_METHODS='["cwrap","ccall","FS"]' \
+  --shell-file shell.html \
+  -o docs/index.html
 ```
 
 CHIP-8 Keypad Layout    &   Keyboard Mapping
