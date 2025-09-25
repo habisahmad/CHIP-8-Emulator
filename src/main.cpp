@@ -20,7 +20,7 @@ static bool    waiter = false;
 static const double CPU_HZ = 600.0;         // try 500..1000
 static const double CPU_DT = 1000.0 / CPU_HZ;   // ms per CPU cycle
 static const double TIMER_DT = 1000.0 / 60.0;   // ~16.6667 
-char const* romFilename = "/roms/Tetris.ch8"; // defaults to tetris.ch8
+char const* romFilename = "/roms/Chip8.ch8"; // defaults to Chip8.ch8
 
 extern "C" {
   EMSCRIPTEN_KEEPALIVE
