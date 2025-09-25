@@ -2,6 +2,9 @@
 
 A simple, fast CHIP-8 emulator written in C++ with an SDL2 renderer, ported to WebAssembly via Emscripten
 
+# Live Preview
+[**▶ Play in your browser**](https://habisahmad.github.io/CHIP-8-Emulator/)
+<br/>
 <img width="3420" height="1520" alt="image" src="https://github.com/user-attachments/assets/f62b81ac-6f0f-45d1-bfca-d7f9a6b381d4" />
 
 ## Features
@@ -15,7 +18,9 @@ A simple, fast CHIP-8 emulator written in C++ with an SDL2 renderer, ported to W
 
 - C++17 or later
 - SDL2
-- pkg-config
+- [Emscripten](https://emscripten.org/docs/getting_started/downloads.html) (emsdk)
+- 
+  
 
 # Build
 ```bash
@@ -27,6 +32,11 @@ em++ src/*.cpp -std=c++17 -O3 \
   -sEXPORTED_RUNTIME_METHODS='["cwrap","ccall","FS"]' \
   --shell-file shell.html \
   -o docs/index.html
+```
+
+## Run Locally
+```bash
+python3 -m http.server --directory docs 8080
 ```
 
 CHIP-8 Keypad Layout    &   Keyboard Mapping
